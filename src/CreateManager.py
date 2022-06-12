@@ -27,16 +27,19 @@ def summarize(n_processes, comm, settings):
 
     print("Main process has received the calculated hashes")
 
-    # Save results to the file and print results to the console
-    print(finalData)
+    # Save results to the file and print file location to console
     save_to_file(finalData, settings)
 
 
 def save_to_file(vector, settings):
-    f = open("RT_C{}_D{}_L{}.txt".format(settings[0], settings[1], settings[2]), "w")
+    filename = "RT_C{}_D{}_L{}.txt".format(settings[0], settings[1], settings[2])
+    f = open(filename, "w")
     for c in vector:
         for e in c:
             f.write(e + "\n")
+
+    print("\nRainbow Table generated successfully!")
+    print("You can find it here: {}".format(filename))
 
 
 def manageCreatingTable(n_processes, comm):

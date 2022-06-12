@@ -22,7 +22,6 @@ def calculate_hashes(comm, process_id):
         for i in range(0, d):
             h = SHA256.SHA256Hash(bytes(pwd, 'utf-8')).hexdigest()
             pwd = gen_pwd(int(h, 16)+i, length)
-        print([first, pwd])
         table.append([first, pwd])
     comm.isend(table, dest=0)
 

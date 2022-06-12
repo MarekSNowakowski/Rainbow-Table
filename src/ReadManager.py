@@ -1,5 +1,4 @@
 import string
-import re
 
 
 def collectAnswer(n_processes, comm):
@@ -21,11 +20,13 @@ def read_table_file(file_name: string):
     lines = file.readlines()
     start = []
     end = []
-    for i, line in lines:
+    i = 0
+    for line in lines:
         if i % 2 == 0:
-            start.append(line)
+            start.append(line.strip())
         else:
-            end.append(line)
+            end.append(line.strip())
+        i += 1
     return [start, end]
 
 
@@ -33,9 +34,12 @@ def manageReadingTable(n_processes, comm):
     path = input("Please provide the file path: ")
     target_hash = input("Please type the hash you are looking for: ")
     table = read_table_file(path)
-    length = "".join(c for c in path.split("_")[2] if c.isdigit())
-    print(length)
-    data = [table[0], table[1], target_hash, int(length)]
+    length = "".join(c for c in path.split("_")[3] if c.isdigit())
+    chain_length = "".join(c for c in path.split("_")[2] if c.isdigit())
+    C = "".join(c for c in path.split("_")[1] if c.isdigit())
     for i in range(1, n_processes):
+        start = (i-1) * int(C) // (n_processes - 1)
+        end = i * int(C) // (n_processes - 1)
+        data = [table[0][start:end], table[1][start:end], target_hash, int(length), int(chain_length)]
         comm.isend(data, dest=i)    # this should split data so that only a part is passed
     collectAnswer(n_processes, comm)
