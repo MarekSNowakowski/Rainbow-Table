@@ -16,23 +16,27 @@ def send_data(n_processes, comm, info):
     return NotImplemented
 
 
-def summarize(n_processes, comm):
+def summarize(n_processes, comm, settings):
     finalData = []
 
     for i in range(1, n_processes):
         request = comm.irecv(source=i)
-        finalData.append(request.wait())  # put together hashes in chains
+        data = request.wait()
+        for e in data:
+            finalData.append(e)  # put together hashes in chains
 
     print("Main process has received the calculated hashes")
 
     # Save results to the file and print results to the console
     print(finalData)
-    save_to_file(finalData)
+    save_to_file(finalData, settings)
 
 
-def save_to_file(vector):
-    f = open("rainbow_table.txt", "w")
-    f.writeLines(vector)
+def save_to_file(vector, settings):
+    f = open("RT_C{}_D{}_L{}.txt".format(settings[0], settings[1], settings[2]), "w")
+    for c in vector:
+        for e in c:
+            f.write(e + "\n")
 
 
 def manageCreatingTable(n_processes, comm):
@@ -40,5 +44,7 @@ def manageCreatingTable(n_processes, comm):
     D = input("Please type chain size: ")
     L = input("Please type password length: ")
 
-    send_data(n_processes, comm, [int(C), int(D), int(L)])  # main process sends data
-    summarize(n_processes, comm)  # and puts up together results
+    settings = [int(C), int(D), int(L)]
+
+    send_data(n_processes, comm, settings)  # main process sends data
+    summarize(n_processes, comm, settings)  # and puts up together results
