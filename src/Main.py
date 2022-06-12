@@ -1,7 +1,7 @@
 from mpi4py import MPI
 
 from RainbowTable import calculate_hashes
-from ReadHash import find_hash_in_table
+from ReadHash import findHashInTable
 from CreateManager import manageCreatingTable
 from ReadManager import manageReadingTable
 
@@ -20,14 +20,13 @@ def main():
             manageCreatingTable(n_processes, comm)
         elif ans == 'R':
             manageReadingTable(n_processes, comm)
-
-    if process_id != 0:
+    else:
         request = comm.irecv(source=0)
         mode = request.wait()
         if mode == 'C':
             calculate_hashes(comm, process_id)  # workers calculate hashes
         elif mode == 'R':
-            find_hash_in_table()
+            findHashInTable(comm)
         else:
             exit()
 
