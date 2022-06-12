@@ -33,6 +33,10 @@ def read_table_file(file_name: string):
 def manageReadingTable(n_processes, comm):
     path = input("Please provide the file path: ")
     target_hash = input("Please type the hash you are looking for: ")
+    readTable(path, target_hash, n_processes, comm)
+
+
+def readTable(path, target_hash, n_processes, comm):
     table = read_table_file(path)
     length = "".join(c for c in path.split("_")[3] if c.isdigit())
     chain_length = "".join(c for c in path.split("_")[2] if c.isdigit())
